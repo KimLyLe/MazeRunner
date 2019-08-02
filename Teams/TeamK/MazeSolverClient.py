@@ -43,7 +43,8 @@ class MazeSolverClient:
     def publish(self, topic, message=None, qos=0, retain=False):
         # TODO: this is you job now :-)
         # HINT: it might be a good idea to look into file Framework\Test\test_mqtt_publisher.py
-        pass
+        print("Published message: " , topic , " --> " , message)
+        self.master.publish(topic,message,qos,retain)
 
 
     # Implement MQTT receive message function -> Callback function that is called when we receive message
@@ -66,19 +67,19 @@ class MazeSolverClient:
             else:
                 pass
         elif topic=="/maze/dimRow":
-            self.solver.setDimRows(int(payload))
-            self.solver.startMaze(self.solver.dimRows, self.solver.dimColumns)
+            self.solver.setDimRowsCmd(int(payload))
+            self.solver.startMazeCmd(self.solver.dimRows, self.solver.dimColumns)
         elif topic=="/maze/dimCol":
-            self.solver.setDimCols(int(payload))
-            self.solver.startMaze(self.solver.dimRows, self.solver.dimColumns)
+            self.solver.setDimColsCmd(int(payload))
+            self.solver.startMazeCmd(self.solver.dimRows, self.solver.dimColumns)
         elif topic=="/maze/startCol":
-            self.solver.setStartCol(int(payload))
+            self.solver.setStartColCmd(int(payload))
         elif topic=="/maze/startRow":
-            self.solver.setStartRow(int(payload))
+            self.solver.setStartRowCmd(int(payload))
         elif topic=="/maze/endCol":
-            self.solver.setEndCol(int(payload))
+            self.solver.setEndColCmd(int(payload))
         elif topic=="/maze/endRow":
-            self.solver.setEndRow(int(payload))
+            self.solver.setEndRowCmd(int(payload))
         elif topic=="/maze/blocked":
             cell = payload.split(",")
             self.solver.setBlocked(int(cell[0]),int(cell[1]))
@@ -108,8 +109,11 @@ class MazeSolverClient:
         # TODO: this is you job now :-)
 
         #HINT:  don't forget to publish the results, e.g. 
-        #self.publish("/maze/go" , resultString)
-        pass
+        self.publish("/maze/go" , resultString)
+        for step in self.solver.solveMaze():
+            step_str = '{},{}'.format(step[0],step[1])
+           
+            self.publish("/maze/go" , step_str)
 
     
 if __name__ == '__main__':
