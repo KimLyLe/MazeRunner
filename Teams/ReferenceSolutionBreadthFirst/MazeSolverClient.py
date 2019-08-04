@@ -29,7 +29,7 @@ class MazeSolverClient:
             elif payload == "start":
                 self.solver.startMaze()
             elif payload == "solve":
-                self.solveMaze()                
+                self.solveMaze()              
             elif payload == "end":
                 self.solver.endMaze()
                 self.solver.printMaze()

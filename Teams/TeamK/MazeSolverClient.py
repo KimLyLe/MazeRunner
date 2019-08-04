@@ -46,6 +46,15 @@ class MazeSolverClient:
         print("Published message: " , topic , " --> " , message)
         self.master.publish(topic,message,qos,retain)
 
+    def solveMazeClient(self):
+            # TODO: this is you job now :-)
+            #HINT:  don't forget to publish the results, e.g.
+            print('Was geht')
+            for step in self.solver.solveMaze():
+                print('Step: ', step)
+                step_str = '{},{}'.format(step[0],step[1])
+            
+                self.publish("/maze/go" , step_str)
 
     # Implement MQTT receive message function -> Callback function that is called when we receive message
     def onMessage(self, master, obj, msg):
@@ -58,20 +67,21 @@ class MazeSolverClient:
             if payload == "clear":
                 self.solver.clearMaze()
             elif payload == "start":
-                self.solver.startMaze()
+                self.solver.startMaze(0,0)
             elif payload == "solve":
-                self.solveMaze()                
+                self.solveMazeClient()
             elif payload == "end":
+                self.solver.startMaze(self.solver.dimRows,self.solver.dimCols)
                 self.solver.endMaze()
                 self.solver.printMaze()
             else:
                 pass
         elif topic=="/maze/dimRow":
             self.solver.setDimRowsCmd(int(payload))
-            self.solver.startMazeCmd(self.solver.dimRows, self.solver.dimColumns)
+            self.solver.startMaze(self.solver.dimRows, self.solver.dimCols)
         elif topic=="/maze/dimCol":
             self.solver.setDimColsCmd(int(payload))
-            self.solver.startMazeCmd(self.solver.dimRows, self.solver.dimColumns)
+            self.solver.startMaze(self.solver.dimRows, self.solver.dimCols)
         elif topic=="/maze/startCol":
             self.solver.setStartColCmd(int(payload))
         elif topic=="/maze/startRow":
@@ -105,15 +115,7 @@ class MazeSolverClient:
         print("Connnect to mqtt-broker")
 
     # Initiate the solving process of the maze solver
-    def solveMaze(self):
-        # TODO: this is you job now :-)
-
-        #HINT:  don't forget to publish the results, e.g. 
-        self.publish("/maze/go" , resultString)
-        for step in self.solver.solveMaze():
-            step_str = '{},{}'.format(step[0],step[1])
-           
-            self.publish("/maze/go" , step_str)
+   
 
     
 if __name__ == '__main__':

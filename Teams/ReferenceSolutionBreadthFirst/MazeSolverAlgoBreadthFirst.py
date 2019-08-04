@@ -11,8 +11,6 @@ class MazeSolverAlgoBreadthFirst:
     TARGET = 3      # the position of the target
 
     def __init__(self):
-        self.rows = 0
-        self.columns = 0
         self.dimCols = 0 
         self.dimRows = 0 
         self.setStartCol = 0 
@@ -23,12 +21,10 @@ class MazeSolverAlgoBreadthFirst:
         print("Initialize a Maze Solver")
 
     def setDimRowsCmd(self, rows):
-        self.rows = rows
         self.dimRows = rows
 
     def setDimColsCmd(self, cols):
-        self.columns = cols
-        self.dimColumns = cols
+        self.dimCols = cols
 
     def setStartColCmd(self, col):
         self.setStartCol = col
